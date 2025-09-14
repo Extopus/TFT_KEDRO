@@ -1,0 +1,33 @@
+[build-system]
+requires = [ "setuptools",]
+build-backend = "setuptools.build_meta"
+
+[project]
+requires-python = ">=3.9"
+name = "tft_kedro"
+readme = "README.md"
+dynamic = [ "version",]
+dependencies = [ "ipython>=8.10", "jupyterlab>=3.0", "notebook", "kedro~=0.19.11",]
+
+[project.scripts]
+tft-kedro = "tft_kedro.__main__:main"
+
+[tool.kedro]
+package_name = "tft_kedro"
+project_name = "TFT_KEDRO"
+kedro_init_version = "0.19.11"
+tools = "['None']"
+example_pipeline = "False"
+source_dir = "src"
+
+[project.entry-points."kedro.hooks"]
+
+[tool.setuptools.dynamic.version]
+attr = "tft_kedro.__version__"
+
+[tool.setuptools.packages.find]
+where = [ "src",]
+namespaces = false
+
+[tool.kedro_telemetry]
+project_id = "84b23803ae67417e9561a8dc65a328d6"

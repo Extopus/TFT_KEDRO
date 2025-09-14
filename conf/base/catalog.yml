@@ -1,0 +1,66 @@
+# ================================
+# Kedro Data Catalog
+# ================================
+# Aquí defines tus datasets y cómo se leen/guardan.
+# Puedes agregar más configuraciones según necesites (parquet, excel, sql, etc.)
+# ================================
+
+# ----------- RAW DATA (01_raw) -----------
+challenger_raw:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/TFT_Challenger_MatchData.csv
+  load_args:
+    encoding: utf-8
+
+platinum_raw:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/TFT_Platinum_MatchData.csv
+  load_args:
+    encoding: utf-8
+
+grandmaster_raw:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/TFT_Grandmaster_MatchData.csv
+  load_args:
+    encoding: utf-8
+
+# ----------- INTERMEDIATE DATA (02_intermediate) -----------
+challenger_intermediate:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/TFT_Challenger_MatchData_cleaned.csv
+  save_args:
+    index: false
+
+platinum_intermediate:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/TFT_Platinum_MatchData_cleaned.csv
+  save_args:
+    index: false
+
+grandmaster_intermediate:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/TFT_Grandmaster_MatchData_cleaned.csv
+  save_args:
+    index: false
+
+# ----------- PRIMARY DATA (03_primary) -----------
+# Datos ya limpios y listos para feature engineering
+tft_primary:
+  type: pandas.ParquetDataSet
+  filepath: data/03_primary/tft_primary.parquet
+  save_args:
+    index: false
+
+# ----------- FEATURE DATA (04_feature) -----------
+tft_features:
+  type: pandas.ParquetDataSet
+  filepath: data/04_feature/tft_features.parquet
+  save_args:
+    index: false
+
+# ----------- MODEL INPUT (05_model_input) -----------
+tft_model_input:
+  type: pandas.ParquetDataSet
+  filepath: data/05_model_input/tft_model_input.parquet
+  save_args:
+    index: false
