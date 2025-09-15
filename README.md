@@ -1,105 +1,105 @@
-<<<<<<< HEAD
-# TFT_KEDRO
-=======
-# TFT_KEDRO
+# TFT Kedro Project
 
-[![Powered by Kedro](https://img.shields.io/badge/powered_by-kedro-ffc900?logo=kedro)](https://kedro.org)
+Proyecto de análisis de datos de Teamfight Tactics (TFT) utilizando el framework Kedro para la gestión de pipelines de datos.
 
-## Overview
+## Descripción
 
-This is your new Kedro project, which was generated using `kedro 0.19.11`.
+Este proyecto analiza datos de partidas de TFT de diferentes rangos competitivos (Challenger, Grandmaster, Platinum) para extraer insights y patrones que puedan ser útiles para el modelado predictivo.
 
-Take a look at the [Kedro documentation](https://docs.kedro.org) to get started.
-
-## Rules and guidelines
-
-In order to get the best out of the template:
-
-* Don't remove any lines from the `.gitignore` file we provide
-* Make sure your results can be reproduced by following a data engineering convention
-* Don't commit data to your repository
-* Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
-
-## How to install dependencies
-
-Declare any dependencies in `requirements.txt` for `pip` installation.
-
-To install them, run:
+## Estructura del Proyecto
 
 ```
+TFT_KEDRO/
+├── conf/                    # Configuraciones de Kedro
+├── data/                    # Datos del proyecto
+│   ├── 01_raw/             # Datos crudos
+│   ├── 02_intermediate/    # Datos limpios
+│   └── 04_feature/         # Datos con features
+├── notebooks/               # Jupyter notebooks para análisis
+├── src/tft_kedro/          # Código fuente del proyecto
+└── pipelines/              # Pipelines de Kedro
+```
+
+## Instalación y Configuración
+
+### 1. Crear entorno virtual
+```bash
+python -m venv .venv
+```
+
+### 2. Activar entorno virtual
+```bash
+# En Windows
+.venv\Scripts\activate
+
+# En Linux/Mac
+source .venv/bin/activate
+```
+
+### 3. Instalar dependencias
+```bash
 pip install -r requirements.txt
 ```
 
-## How to run your Kedro pipeline
-
-You can run your Kedro project with:
-
-```
-kedro run
+### 4. Ejecutar Jupyter Notebooks
+```bash
+jupyter notebook --NotebookApp.token=''
 ```
 
-## How to test your Kedro project
+## Ejecución de Pipelines
 
-Have a look at the file `src/tests/test_run.py` for instructions on how to write your tests. You can run your tests as follows:
-
-```
-pytest
-```
-
-You can configure the coverage threshold in your project's `pyproject.toml` file under the `[tool.coverage.report]` section.
-
-
-## Project dependencies
-
-To see and update the dependency requirements for your project use `requirements.txt`. You can install the project requirements with `pip install -r requirements.txt`.
-
-[Further information about project dependencies](https://docs.kedro.org/en/stable/kedro_project_setup/dependencies.html#project-specific-dependencies)
-
-## How to work with Kedro and notebooks
-
-> Note: Using `kedro jupyter` or `kedro ipython` to run your notebook provides these variables in scope: `context`, 'session', `catalog`, and `pipelines`.
->
-> Jupyter, JupyterLab, and IPython are already included in the project requirements by default, so once you have run `pip install -r requirements.txt` you will not need to take any extra steps before you use them.
-
-### Jupyter
-To use Jupyter notebooks in your Kedro project, you need to install Jupyter:
-
-```
-pip install jupyter
+### Pipeline de Comprensión del Negocio
+```bash
+kedro run --pipeline business_understanding
 ```
 
-After installing Jupyter, you can start a local notebook server:
-
-```
-kedro jupyter notebook
-```
-
-### JupyterLab
-To use JupyterLab, you need to install it:
-
-```
-pip install jupyterlab
+### Pipeline de Limpieza de Datos
+```bash
+kedro run --pipeline data_cleaning
 ```
 
-You can also start JupyterLab:
-
-```
-kedro jupyter lab
-```
-
-### IPython
-And if you want to run an IPython session:
-
-```
-kedro ipython
+### Pipeline de Ingeniería de Features
+```bash
+kedro run --pipeline feature_engineering
 ```
 
-### How to ignore notebook output cells in `git`
-To automatically strip out all output cell contents before committing to `git`, you can use tools like [`nbstripout`](https://github.com/kynan/nbstripout). For example, you can add a hook in `.git/config` with `nbstripout --install`. This will run `nbstripout` before anything is committed to `git`.
+### Visualización de Pipelines
+```bash
+kedro viz
+```
 
-> *Note:* Your output cells will be retained locally.
+## Pipelines Disponibles
 
-## Package your Kedro project
+1. **business_understanding**: Análisis exploratorio inicial de los datos
+2. **data_cleaning**: Limpieza y preprocesamiento de datos
+3. **feature_engineering**: Creación y transformación de variables
 
-[Further information about building project documentation and packaging your project](https://docs.kedro.org/en/stable/tutorial/package_a_project.html)
->>>>>>> d60f603 (Primer commit del proyecto TFT-Kedro)
+## Datos
+
+El proyecto incluye datos de partidas de TFT de tres rangos competitivos:
+- Challenger
+- Grandmaster  
+- Platinum
+
+Los datos se procesan a través de tres etapas:
+- **Raw**: Datos originales sin procesar
+- **Intermediate**: Datos limpios y preprocesados
+- **Feature**: Datos con variables de ingeniería aplicadas
+
+## Requisitos
+
+- Python 3.8+
+- Kedro
+- Pandas
+- NumPy
+- Jupyter Notebook
+
+## Contribución
+
+Para contribuir al proyecto, sigue estos pasos:
+
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -am 'Agrega nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crea un Pull Request
