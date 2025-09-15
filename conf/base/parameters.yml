@@ -1,0 +1,92 @@
+# ================================
+# TFT Kedro Project Parameters
+# ================================
+# Parámetros de configuración para el proyecto TFT
+# ================================
+
+# Configuración de datos
+data_config:
+  raw_data_path: "data/01_raw"
+  intermediate_data_path: "data/02_intermediate"
+  primary_data_path: "data/03_primary"
+  feature_data_path: "data/04_feature"
+  model_input_path: "data/05_model_input"
+  
+  # Datasets disponibles
+  datasets:
+    - "TFT_Challenger_MatchData"
+    - "TFT_Grandmaster_MatchData"
+    - "TFT_Platinum_MatchData"
+
+# Configuración de pipelines
+pipelines:
+  business_understanding:
+    enabled: true
+    output_stats: true
+    
+  data_cleaning:
+    enabled: true
+    remove_duplicates: true
+    handle_missing_values: "drop"
+    
+  feature_engineering:
+    enabled: true
+    create_derived_features: true
+    normalize_features: true
+
+# Configuración de Machine Learning
+ml_config:
+  # Targets identificados
+  targets:
+    classification:
+      name: "rank_prediction"
+      classes: ["Challenger", "Grandmaster", "Platinum"]
+      description: "Predicción del rango del jugador"
+      
+    regression:
+      name: "placement_prediction"
+      range: [1, 8]
+      description: "Predicción del placement en partidas"
+  
+  # Features principales (basadas en columnas disponibles)
+  features:
+    numerical:
+      - "gameDuration"
+      - "level"
+      - "lastRound"
+      - "ingameDuration"
+      - "gameDuration_min"
+      
+    categorical:
+      - "combination"
+      - "champion"
+      
+  # Configuración de modelos
+  models:
+    test_size: 0.2
+    random_state: 42
+    cv_folds: 5
+    output_path: "data/models"
+    
+  # Configuración de algoritmos
+  algorithms:
+    classification:
+      - "RandomForest"
+      - "LogisticRegression"
+    regression:
+      - "RandomForest"
+      - "LinearRegression"
+
+# Configuración de visualizaciones
+visualization:
+  figure_size: [12, 8]
+  style: "seaborn"
+  interactive: true
+  save_plots: true
+  plots_path: "plots"
+
+# Configuración de logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/tft_kedro.log"

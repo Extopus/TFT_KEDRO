@@ -9,20 +9,14 @@
 challenger_raw:
   type: pandas.CSVDataset
   filepath: data/01_raw/TFT_Challenger_MatchData.csv
-  load_args:
-    encoding: utf-8
 
 platinum_raw:
   type: pandas.CSVDataset
   filepath: data/01_raw/TFT_Platinum_MatchData.csv
-  load_args:
-    encoding: utf-8
 
 grandmaster_raw:
   type: pandas.CSVDataset
   filepath: data/01_raw/TFT_Grandmaster_MatchData.csv
-  load_args:
-    encoding: utf-8
 
 # ----------- INTERMEDIATE DATA (02_intermediate) -----------
 challenger_intermediate:
@@ -96,3 +90,56 @@ grandmaster_features:
   filepath: data/04_feature/TFT_Grandmaster_MatchData_features.csv
   save_args:
     index: false
+
+# ----------- MACHINE LEARNING DATASETS -----------
+tft_combined_features:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/tft_combined_features.parquet
+  save_args:
+    index: false
+
+# ----------- MODEL OUTPUTS -----------
+classification_results:
+  type: pickle.PickleDataset
+  filepath: data/models/classification_results.pkl
+
+regression_results:
+  type: pickle.PickleDataset
+  filepath: data/models/regression_results.pkl
+
+ml_insights:
+  type: json.JSONDataset
+  filepath: data/models/ml_insights.json
+
+classification_feature_importance:
+  type: json.JSONDataset
+  filepath: data/models/classification_feature_importance.json
+
+regression_feature_importance:
+  type: json.JSONDataset
+  filepath: data/models/regression_feature_importance.json
+
+saved_models_info:
+  type: json.JSONDataset
+  filepath: data/models/saved_models_info.json
+
+# ----------- REPORTING OUTPUTS -----------
+executive_summary:
+  type: json.JSONDataset
+  filepath: data/reports/executive_summary.json
+
+dashboard_info:
+  type: json.JSONDataset
+  filepath: data/reports/dashboard_info.json
+
+model_report_info:
+  type: json.JSONDataset
+  filepath: data/reports/model_report_info.json
+
+insights_viz_info:
+  type: json.JSONDataset
+  filepath: data/reports/insights_viz_info.json
+
+final_report_info:
+  type: json.JSONDataset
+  filepath: data/reports/final_report_info.json
