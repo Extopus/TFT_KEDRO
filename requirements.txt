@@ -2,3 +2,8 @@ ipython>=8.10
 jupyterlab>=3.0
 kedro~=0.19.11
 notebook
+kedro-viz>=11.1.0
+pandas>=1.5.0
+numpy>=1.23.0
+matplotlib>=3.7.0
+seaborn>=0.12.0

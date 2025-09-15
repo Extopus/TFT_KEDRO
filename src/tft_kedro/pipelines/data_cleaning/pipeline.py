@@ -5,8 +5,20 @@ def create_pipeline(**kwargs):
     return Pipeline([
         node(
             func=clean_csv_data,
-            inputs="raw_csv",
-            outputs="cleaned_csv",
-            name="clean_csv_data_node"
+            inputs="challenger_raw",
+            outputs="challenger_intermediate",
+            name="clean_challenger"
+        ),
+        node(
+            func=clean_csv_data,
+            inputs="platinum_raw",
+            outputs="platinum_intermediate",
+            name="clean_platinum"
+        ),
+        node(
+            func=clean_csv_data,
+            inputs="grandmaster_raw",
+            outputs="grandmaster_intermediate",
+            name="clean_grandmaster"
         )
     ])
