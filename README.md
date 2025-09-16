@@ -409,4 +409,8 @@ kedro run --pipeline business_understanding
 - **Features derivadas** para modelado ML
 - **Pipeline modular** y reutilizable
 
+
+- **Features derivadas** para modelado ML
+- **Pipeline modular** y reutilizable
+
 **Nota**: Este proyecto implementa las mejores prácticas de ingeniería de software para Machine Learning, incluyendo modularidad, reproducibilidad y documentación completa. Los pipelines básicos están 100% funcionales y listos para uso.
