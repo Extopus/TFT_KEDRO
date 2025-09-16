@@ -10,6 +10,11 @@ Este proyecto implementa las primeras 3 fases de la metodología CRISP-DM para a
 - **Comprensión de los Datos**: Realizar EDA exhaustivo en múltiples datasets
 - **Preparación de los Datos**: Limpiar, transformar y crear features para modelado predictivo
 
+
+## VIDEO DE PRERSENTACIÓN EN GOOGLE DRIVE :
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+https://drive.google.com/drive/folders/1LI9EPtlOEo9q83BNj1SrcAr9JcyRJbCR?hl=es_419
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 🏗️ Estructura del Proyecto Kedro
 
 ```
