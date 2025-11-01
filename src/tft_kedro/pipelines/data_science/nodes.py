@@ -8,15 +8,31 @@ para clasificación de rangos y regresión de placement en TFT.
 import pandas as pd
 import numpy as np
 import logging
+import os
 from typing import Dict, Any, Tuple, List
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import (
-    classification_report, confusion_matrix, accuracy_score,
-    mean_squared_error, r2_score, mean_absolute_error
+    accuracy_score, precision_score, recall_score, f1_score,
+    mean_squared_error, r2_score, mean_absolute_error,
+    classification_report, confusion_matrix
 )
+
+# Modelos de Clasificación
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neural_network import MLPClassifier
+
+# Modelos de Regresión
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
+from sklearn.svm import SVR
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.neural_network import MLPRegressor
 import joblib
 import json
 
@@ -104,8 +120,24 @@ def train_classification_model(X: pd.DataFrame, y: pd.Series, params: Dict) -> D
             'RandomForest': RandomForestClassifier(
                 n_estimators=100, random_state=42, n_jobs=-1
             ),
+            'GradientBoosting': GradientBoostingClassifier(
+                n_estimators=100, random_state=42
+            ),
             'LogisticRegression': LogisticRegression(
                 random_state=42, max_iter=1000
+            ),
+            'SVC': SVC(
+                random_state=42, probability=True
+            ),
+            'KNN': KNeighborsClassifier(
+                n_neighbors=5
+            ),
+            'DecisionTree': DecisionTreeClassifier(
+                random_state=42
+            ),
+            'MLP': MLPClassifier(
+                random_state=42, max_iter=1000,
+                hidden_layer_sizes=(100, 50)
             )
         }
         
@@ -197,7 +229,29 @@ def train_regression_model(X: pd.DataFrame, y: pd.Series, params: Dict) -> Dict[
             'RandomForest': RandomForestRegressor(
                 n_estimators=100, random_state=42, n_jobs=-1
             ),
-            'LinearRegression': LinearRegression()
+            'GradientBoosting': GradientBoostingRegressor(
+                n_estimators=100, random_state=42
+            ),
+            'LinearRegression': LinearRegression(),
+            'Ridge': Ridge(
+                alpha=1.0, random_state=42
+            ),
+            'Lasso': Lasso(
+                alpha=1.0, random_state=42
+            ),
+            'SVR': SVR(
+                kernel='rbf'
+            ),
+            'KNN': KNeighborsRegressor(
+                n_neighbors=5
+            ),
+            'DecisionTree': DecisionTreeRegressor(
+                random_state=42
+            ),
+            'MLP': MLPRegressor(
+                random_state=42, max_iter=1000,
+                hidden_layer_sizes=(100, 50)
+            )
         }
         
         results = {}
@@ -402,6 +456,8 @@ def save_ml_models(classification_results: Dict, regression_results: Dict,
     logger.info("Guardando modelos de Machine Learning")
     
     try:
+        # Asegurar que la carpeta de salida exista
+        os.makedirs(output_path, exist_ok=True)
         saved_files = {}
         
         # Guardar modelo de clasificación
@@ -428,8 +484,8 @@ def save_ml_models(classification_results: Dict, regression_results: Dict,
         
         # Guardar métricas
         metrics = {
-            'classification_metrics': classification_results.get('metrics', {}),
-            'regression_metrics': regression_results.get('metrics', {}),
+            'classification_metrics': classification_results.get('metrics', {}) if classification_results else {},
+            'regression_metrics': regression_results.get('metrics', {}) if regression_results else {},
             'timestamp': pd.Timestamp.now().isoformat()
         }
         
@@ -444,4 +500,116 @@ def save_ml_models(classification_results: Dict, regression_results: Dict,
         
     except Exception as e:
         logger.error(f"Error guardando modelos: {str(e)}")
+        raise
+
+
+def train_classification_random_forest(X: pd.DataFrame, y: pd.Series, params: Dict) -> Dict[str, Any]:
+    """
+    Entrena únicamente un RandomForestClassifier para clasificación.
+    """
+    logger.info("Entrenando RandomForest para clasificación")
+    try:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=params.get('test_size', 0.2), 
+            random_state=params.get('random_state', 42), stratify=y
+        )
+
+        rf = RandomForestClassifier(
+            n_estimators=params.get('classification_config', {}).get('hyperparameters', {}).get('RandomForest', {}).get('n_estimators', 100),
+            random_state=params.get('random_state', 42),
+            n_jobs=-1
+        )
+
+        rf.fit(X_train, y_train)
+        y_pred = rf.predict(X_test)
+        y_pred_proba = rf.predict_proba(X_test)
+
+        accuracy = accuracy_score(y_test, y_pred)
+        cv_scores = cross_val_score(rf, X_train, y_train, cv=params.get('cv_folds', 5), scoring='accuracy')
+
+        results = {
+            'model': rf,
+            'scaler': None,
+            'accuracy': accuracy,
+            'cv_mean': cv_scores.mean(),
+            'cv_std': cv_scores.std(),
+            'predictions': y_pred,
+            'probabilities': y_pred_proba,
+            'test_actual': y_test,
+            'classification_report': classification_report(y_test, y_pred, output_dict=True)
+        }
+
+        return {
+            'best_model_name': 'RandomForest',
+            'best_model': rf,
+            'scaler': None,
+            'results': results,
+            'feature_names': X.columns.tolist(),
+            'metrics': {
+                'accuracy': accuracy,
+                'cv_mean': cv_scores.mean(),
+                'cv_std': cv_scores.std()
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error entrenando RandomForest clasificación: {e}")
+        raise
+
+
+def train_regression_random_forest(X: pd.DataFrame, y: pd.Series, params: Dict) -> Dict[str, Any]:
+    """
+    Entrena únicamente un RandomForestRegressor para regresión.
+    """
+    logger.info("Entrenando RandomForest para regresión")
+    try:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=params.get('test_size', 0.2), 
+            random_state=params.get('random_state', 42)
+        )
+
+        rf = RandomForestRegressor(
+            n_estimators=params.get('regression_config', {}).get('hyperparameters', {}).get('RandomForest', {}).get('n_estimators', 100),
+            random_state=params.get('random_state', 42),
+            n_jobs=-1
+        )
+
+        rf.fit(X_train, y_train)
+        y_pred = rf.predict(X_test)
+
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = np.sqrt(mse)
+        mae = mean_absolute_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+
+        cv_scores = cross_val_score(rf, X_train, y_train, cv=params.get('cv_folds', 5), scoring='r2')
+
+        results = {
+            'model': rf,
+            'scaler': None,
+            'mse': mse,
+            'rmse': rmse,
+            'mae': mae,
+            'r2': r2,
+            'cv_mean': cv_scores.mean(),
+            'cv_std': cv_scores.std(),
+            'predictions': y_pred,
+            'test_actual': y_test
+        }
+
+        return {
+            'best_model_name': 'RandomForest',
+            'best_model': rf,
+            'scaler': None,
+            'results': results,
+            'feature_names': X.columns.tolist(),
+            'metrics': {
+                'r2': r2,
+                'rmse': rmse,
+                'mae': mae,
+                'cv_mean': cv_scores.mean(),
+                'cv_std': cv_scores.std()
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error entrenando RandomForest regresión: {e}")
         raise

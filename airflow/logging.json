@@ -1,0 +1,32 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "airflow": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "airflow",
+            "stream": "ext://sys.stdout"
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "formatter": "airflow",
+            "filename": "airflow/logs/kedro_pipelines.log"
+        }
+    },
+    "loggers": {
+        "airflow.tft_kedro_dag": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": false
+        }
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING"
+    }
+}

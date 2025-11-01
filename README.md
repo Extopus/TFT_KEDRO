@@ -52,6 +52,41 @@ TFT_KEDRO/
 
 ## 🚀 Instalación y Configuración
 
+### Opción A: Instalación con Docker y Airflow
+
+Si deseas ejecutar el proyecto con Apache Airflow en Docker:
+
+1. **Requisitos previos**
+   - Docker Desktop instalado y en ejecución
+   - Docker Compose instalado
+   - Git (para clonar el repositorio)
+
+2. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/tuusuario/TFT_KEDRO.git
+   cd TFT_KEDRO
+   ```
+
+3. **Iniciar Airflow**
+   ```bash
+   # Windows
+   .\scripts\start-airflow.ps1 -Clean -Init
+
+   # Linux/Mac
+   ./scripts/start-airflow.sh --clean --init
+   ```
+
+4. **Acceder a la interfaz web de Airflow**
+   - Abrir en el navegador: http://localhost:8080
+   - Usuario: admin
+   - Contraseña: admin
+
+5. **Verificar DAGs**
+   - Los DAGs de Kedro deberían aparecer automáticamente
+   - Activar el DAG principal para ejecutar el pipeline completo
+
+### Opción B: Instalación Local con Python
+
 ### 1. Crear entorno virtual
 ```bash
 python -m venv .venv
@@ -235,6 +270,26 @@ kedro viz
 
 ## 🔍 Comandos Útiles
 
+### Comandos Docker y Airflow
+
+```bash
+# Iniciar Airflow con limpieza
+.\scripts\start-airflow.ps1 -Clean -Init  # Windows
+./scripts/start-airflow.sh --clean --init # Linux/Mac
+
+# Detener Airflow
+.\scripts\stop-airflow.ps1  # Windows
+./scripts/stop-airflow.sh   # Linux/Mac
+
+# Ver logs de contenedores
+docker compose -f docker-compose.airflow.yml logs -f
+
+# Reiniciar contenedores específicos
+docker compose -f docker-compose.airflow.yml restart webserver scheduler
+```
+
+### Comandos Kedro
+
 ```bash
 # Listar datasets disponibles
 kedro catalog list
@@ -254,7 +309,42 @@ kedro pipeline delete <nombre>
 
 ## 🚨 Troubleshooting
 
-### Problemas Comunes
+### Problemas con Docker y Airflow
+
+#### Error: "docker daemon is not running"
+```bash
+# Verificar que Docker Desktop está en ejecución
+# Reiniciar Docker Desktop si es necesario
+```
+
+#### Error: "port 8080 already in use"
+```bash
+# Verificar qué está usando el puerto
+netstat -ano | findstr :8080  # Windows
+lsof -i :8080                 # Linux/Mac
+
+# Detener el proceso o cambiar el puerto en docker-compose.airflow.yml
+```
+
+#### Error: "container exited with code 1"
+```bash
+# Ver logs detallados
+docker compose -f docker-compose.airflow.yml logs airflow-webserver
+docker compose -f docker-compose.airflow.yml logs airflow-scheduler
+```
+
+#### Error: "cannot create directory /opt/airflow/logs"
+```bash
+# Detener contenedores
+.\scripts\stop-airflow.ps1  # Windows
+./scripts/stop-airflow.sh   # Linux/Mac
+
+# Limpiar e iniciar de nuevo
+.\scripts\start-airflow.ps1 -Clean -Init  # Windows
+./scripts/start-airflow.sh --clean --init # Linux/Mac
+```
+
+### Problemas Comunes con Kedro
 
 #### Error: "Dataset not found"
 ```bash
@@ -350,7 +440,7 @@ Este proyecto es parte de la evaluación parcial de Machine Learning - Universid
 
 ## 👥 Autores
 
-- [Nombres de los integrantes del equipo]
+
 
 ## ✅ Estado del Proyecto
 

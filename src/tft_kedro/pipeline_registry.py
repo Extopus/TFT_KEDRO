@@ -16,11 +16,30 @@ def register_pipelines() -> dict[str, Pipeline]:
     from tft_kedro.pipelines import feature_engineering
     from tft_kedro.pipelines import data_science
     from tft_kedro.pipelines import reporting
+    from tft_kedro.pipelines.data_science import (
+        classification_pipeline,
+        regression_pipeline,
+        classification_rf_pipeline,
+        regression_rf_pipeline,
+    )
+
     pipelines = find_pipelines()
     pipelines["data_cleaning"] = data_cleaning.create_pipeline()
     pipelines["business_understanding"] = business_understanding.create_pipeline()
     pipelines["feature_engineering"] = feature_engineering.create_pipeline()
-    pipelines["data_science"] = data_science.create_pipeline()
+    
+    # Separar pipelines de ML
+    pipelines["classification"] = classification_pipeline.create_pipeline()
+    pipelines["regression"] = regression_pipeline.create_pipeline()
+    pipelines["classification_rf"] = classification_rf_pipeline.create_pipeline()
+    pipelines["regression_rf"] = regression_rf_pipeline.create_pipeline()
+    pipelines["data_science"] = (
+        classification_pipeline.create_pipeline()
+        + regression_pipeline.create_pipeline()
+        + classification_rf_pipeline.create_pipeline()
+        + regression_rf_pipeline.create_pipeline()
+    )
+    
     pipelines["reporting"] = reporting.create_pipeline()
     pipelines["__default__"] = sum(pipelines.values())
     return pipelines

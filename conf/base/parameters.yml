@@ -69,13 +69,74 @@ ml_config:
     output_path: "data/models"
     
   # Configuración de algoritmos
-  algorithms:
-    classification:
+  classification_config:
+    models:
       - "RandomForest"
+      - "GradientBoosting"
       - "LogisticRegression"
-    regression:
+      - "SVC"
+      - "KNN"
+      - "DecisionTree"
+      - "MLP"
+    hyperparameters:
+      RandomForest:
+        n_estimators: 100
+        max_depth: null
+      GradientBoosting:
+        n_estimators: 100
+        learning_rate: 0.1
+      LogisticRegression:
+        max_iter: 1000
+        C: 1.0
+      SVC:
+        kernel: "rbf"
+        probability: true
+      KNN:
+        n_neighbors: 5
+      DecisionTree:
+        max_depth: null
+      MLP:
+        hidden_layer_sizes: [100, 50]
+        max_iter: 1000
+    test_size: 0.2
+    cv_folds: 5
+    random_state: 42
+    
+  regression_config:
+    models:
       - "RandomForest"
+      - "GradientBoosting"
       - "LinearRegression"
+      - "Ridge"
+      - "Lasso"
+      - "SVR"
+      - "KNN"
+      - "DecisionTree"
+      - "MLP"
+    hyperparameters:
+      RandomForest:
+        n_estimators: 100
+        max_depth: null
+      GradientBoosting:
+        n_estimators: 100
+        learning_rate: 0.1
+      LinearRegression: {}
+      Ridge:
+        alpha: 1.0
+      Lasso:
+        alpha: 1.0
+      SVR:
+        kernel: "rbf"
+      KNN:
+        n_neighbors: 5
+      DecisionTree:
+        max_depth: null
+      MLP:
+        hidden_layer_sizes: [100, 50]
+        max_iter: 1000
+    test_size: 0.2
+    cv_folds: 5
+    random_state: 42
 
 # Configuración de visualizaciones
 visualization:

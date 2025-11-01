@@ -1,13 +1,11 @@
 # ================================
 # TFT Kedro Project Requirements
 # ================================
-# Librerías requeridas según rúbrica de evaluación
-# ================================
 
 # Core Kedro Framework
-kedro==0.19.11
-kedro-viz==11.1.0
-# kedro-datasets>=1.0.0  # Comentado para evitar conflictos de versión
+kedro==0.18.14
+kedro-viz==5.2.0
+kedro-datasets==1.8.0
 
 # Data Manipulation
 pandas>=1.5.0
@@ -20,6 +18,7 @@ plotly>=5.0.0
 
 # Machine Learning
 scikit-learn>=1.0.0
+joblib>=1.2.0
 
 # Jupyter and Development
 jupyter>=1.0.0
