@@ -143,3 +143,84 @@ insights_viz_info:
 final_report_info:
   type: json.JSONDataset
   filepath: data/reports/final_report_info.json
+
+# ----------- UNSUPERVISED LEARNING OUTPUTS -----------
+# Clustering
+clustering_data_scaled:
+  type: pandas.ParquetDataset
+  filepath: data/06_models/clustering_data_scaled.parquet
+  save_args:
+    index: true
+
+clustering_scaler:
+  type: pickle.PickleDataset
+  filepath: data/06_models/clustering_scaler.pkl
+
+clustering_feature_names:
+  type: json.JSONDataset
+  filepath: data/06_models/clustering_feature_names.json
+
+optimal_k_results:
+  type: json.JSONDataset
+  filepath: data/06_models/optimal_k_results.json
+
+kmeans_results:
+  type: pickle.PickleDataset
+  filepath: data/06_models/kmeans_results.pkl
+
+dbscan_results:
+  type: pickle.PickleDataset
+  filepath: data/06_models/dbscan_results.pkl
+
+hierarchical_results:
+  type: pickle.PickleDataset
+  filepath: data/06_models/hierarchical_results.pkl
+
+clustering_comparison:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/clustering_comparison.csv
+  save_args:
+    index: false
+
+kmeans_patterns:
+  type: json.JSONDataset
+  filepath: data/07_model_output/kmeans_patterns.json
+
+dbscan_patterns:
+  type: json.JSONDataset
+  filepath: data/07_model_output/dbscan_patterns.json
+
+hierarchical_patterns:
+  type: json.JSONDataset
+  filepath: data/07_model_output/hierarchical_patterns.json
+
+# Reducción Dimensional
+dim_reduction_data_scaled:
+  type: pandas.ParquetDataset
+  filepath: data/06_models/dim_reduction_data_scaled.parquet
+  save_args:
+    index: true
+
+dim_reduction_scaler:
+  type: pickle.PickleDataset
+  filepath: data/06_models/dim_reduction_scaler.pkl
+
+dim_reduction_feature_names:
+  type: json.JSONDataset
+  filepath: data/06_models/dim_reduction_feature_names.json
+
+pca_results:
+  type: pickle.PickleDataset
+  filepath: data/06_models/pca_results.pkl
+
+pca_analysis:
+  type: json.JSONDataset
+  filepath: data/07_model_output/pca_analysis.json
+
+tsne_results:
+  type: pickle.PickleDataset
+  filepath: data/06_models/tsne_results.pkl
+
+umap_results:
+  type: pickle.PickleDataset
+  filepath: data/06_models/umap_results.pkl

@@ -16,6 +16,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     from tft_kedro.pipelines import feature_engineering
     from tft_kedro.pipelines import data_science
     from tft_kedro.pipelines import reporting
+    from tft_kedro.pipelines import unsupervised_learning
     from tft_kedro.pipelines.data_science import (
         classification_pipeline,
         regression_pipeline,
@@ -41,5 +42,13 @@ def register_pipelines() -> dict[str, Pipeline]:
     )
     
     pipelines["reporting"] = reporting.create_pipeline()
+    
+    # Pipeline de aprendizaje no supervisado
+    from tft_kedro.pipelines.unsupervised_learning import clustering, dimensionality_reduction
+    
+    pipelines["unsupervised_learning"] = unsupervised_learning.create_pipeline()
+    pipelines["clustering"] = clustering.pipeline.create_pipeline()
+    pipelines["dimensionality_reduction"] = dimensionality_reduction.pipeline.create_pipeline()
+    
     pipelines["__default__"] = sum(pipelines.values())
     return pipelines

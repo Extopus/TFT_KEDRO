@@ -146,6 +146,50 @@ visualization:
   save_plots: true
   plots_path: "plots"
 
+# Configuración de Aprendizaje No Supervisado
+unsupervised_config:
+  # Columnas a excluir del clustering/reducción dimensional
+  exclude_columns:
+    - "gameId"
+    - "rank"
+    - "Ranked"
+  
+  # Configuración de Clustering
+  clustering:
+    # Rango de K para método Elbow
+    k_range: [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    
+    # K-Means
+    kmeans_n_clusters: 3
+    kmeans_random_state: 42
+    
+    # DBSCAN
+    dbscan_eps: 0.5
+    dbscan_min_samples: 5
+    
+    # Hierarchical
+    hierarchical_n_clusters: 3
+    hierarchical_linkage: "ward"  # ward, complete, average
+  
+  # Configuración de Reducción Dimensional
+  dimensionality_reduction:
+    # PCA
+    pca_n_components: null  # null = todos los componentes
+    
+    # t-SNE
+    tsne_n_components: 2
+    tsne_perplexity: 30
+    tsne_n_iter: 1000
+    tsne_max_samples: 10000  # Para datasets grandes
+    
+    # UMAP (opcional)
+    umap_n_components: 2
+    umap_n_neighbors: 15
+    umap_min_dist: 0.1
+  
+  # Random state general
+  random_state: 42
+
 # Configuración de logging
 logging:
   level: "INFO"
