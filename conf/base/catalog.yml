@@ -224,3 +224,18 @@ tsne_results:
 umap_results:
   type: pickle.PickleDataset
   filepath: data/06_models/umap_results.pkl
+
+# ----------- INTEGRATION OUTPUTS -----------
+tft_features_with_clusters:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/tft_features_with_clusters.parquet
+  save_args:
+    index: false
+
+classification_integration_comparison:
+  type: json.JSONDataset
+  filepath: data/07_model_output/classification_integration_comparison.json
+
+regression_integration_comparison:
+  type: json.JSONDataset
+  filepath: data/07_model_output/regression_integration_comparison.json

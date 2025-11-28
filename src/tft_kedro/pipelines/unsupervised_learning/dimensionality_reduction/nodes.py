@@ -149,7 +149,7 @@ def apply_tsne(
     n_components = params.get('tsne_n_components', 2)
     perplexity = params.get('tsne_perplexity', 30)
     random_state = params.get('random_state', 42)
-    n_iter = params.get('tsne_n_iter', 1000)
+    max_iter = params.get('tsne_max_iter', 1000)
     
     # Para datasets grandes, usar submuestra o PCA previo
     max_samples = params.get('tsne_max_samples', 10000)
@@ -167,7 +167,7 @@ def apply_tsne(
         n_components=n_components,
         perplexity=perplexity,
         random_state=random_state,
-        n_iter=n_iter,
+        max_iter=max_iter,
         verbose=1
     )
     
@@ -188,6 +188,7 @@ def apply_tsne(
         'perplexity': perplexity,
         'kl_divergence': float(tsne.kl_divergence_),
         'n_iter': tsne.n_iter_,
+        'max_iter': max_iter,
         'used_sample': use_sample,
         'sample_indices': sample_indices.tolist() if sample_indices is not None else None
     }

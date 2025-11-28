@@ -15,6 +15,11 @@ from .nodes import (
     generate_ml_insights,
     save_ml_models
 )
+from .integration_nodes import (
+    add_clustering_features,
+    compare_classification_with_clusters,
+    compare_regression_with_clusters
+)
 
 
 def create_pipeline(**kwargs) -> Pipeline:
@@ -99,4 +104,57 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
         ],
         tags="data_science"
+    )
+
+
+def create_integrated_pipeline(**kwargs) -> Pipeline:
+    """
+    Crea un pipeline que integra clustering con modelos supervisados.
+    
+    Returns:
+        Pipeline de Kedro que integra unsupervised y supervised learning
+    """
+    return Pipeline(
+        [
+            # Agregar features de clustering al dataset
+            node(
+                func=add_clustering_features,
+                inputs={
+                    "df": "tft_combined_features",
+                    "kmeans_results": "kmeans_results",
+                    "dbscan_results": "dbscan_results",
+                    "hierarchical_results": "hierarchical_results"
+                },
+                outputs="tft_features_with_clusters",
+                name="add_clustering_features",
+                tags=["ml", "integration", "feature_engineering"]
+            ),
+            
+            # Comparar modelos con y sin clusters - Clasificación
+            node(
+                func=compare_classification_with_clusters,
+                inputs={
+                    "df_original": "tft_combined_features",
+                    "df_with_clusters": "tft_features_with_clusters",
+                    "params": "params:ml_config"
+                },
+                outputs="classification_integration_comparison",
+                name="compare_classification_with_clusters",
+                tags=["ml", "classification", "integration", "comparison"]
+            ),
+            
+            # Comparar modelos con y sin clusters - Regresión
+            node(
+                func=compare_regression_with_clusters,
+                inputs={
+                    "df_original": "tft_combined_features",
+                    "df_with_clusters": "tft_features_with_clusters",
+                    "params": "params:ml_config"
+                },
+                outputs="regression_integration_comparison",
+                name="compare_regression_with_clusters",
+                tags=["ml", "regression", "integration", "comparison"]
+            ),
+        ],
+        tags="data_science_integration"
     )

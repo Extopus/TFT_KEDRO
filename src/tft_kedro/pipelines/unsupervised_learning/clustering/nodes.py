@@ -225,6 +225,8 @@ def apply_hierarchical(
     """
     Aplica Hierarchical Clustering (Agglomerative).
     
+    Para datasets grandes (>10k muestras), usa una submuestra para evitar problemas de memoria.
+    
     Args:
         X: Datos escalados
         params: Parámetros de configuración
@@ -236,13 +238,69 @@ def apply_hierarchical(
     
     n_clusters = params.get('hierarchical_n_clusters', 3)
     linkage = params.get('hierarchical_linkage', 'ward')
+    max_samples = params.get('hierarchical_max_samples', 10000)
+    
+    # Para datasets grandes, usar submuestra (Hierarchical es O(n²) en memoria)
+    use_sample = len(X) > max_samples
+    if use_sample:
+        logger.warning(
+            f"Dataset grande ({len(X)} muestras). "
+            f"Usando submuestra de {max_samples} para Hierarchical Clustering "
+            f"(requiere O(n²) memoria)."
+        )
+        # Usar RandomState para reproducibilidad
+        rng = np.random.RandomState(params.get('random_state', 42))
+        sample_indices = rng.choice(
+            len(X), 
+            size=max_samples, 
+            replace=False
+        )
+        X_sample = X.iloc[sample_indices] if isinstance(X, pd.DataFrame) else X[sample_indices]
+        original_indices = sample_indices
+    else:
+        X_sample = X
+        original_indices = None
     
     hierarchical = AgglomerativeClustering(
         n_clusters=n_clusters,
         linkage=linkage
     )
     
-    labels = hierarchical.fit_predict(X)
+    labels_sample = hierarchical.fit_predict(X_sample)
+    
+    # Si usamos submuestra, asignar labels a todas las muestras usando K-Means
+    if use_sample:
+        logger.info("Asignando clusters a todas las muestras usando centroides...")
+        from sklearn.cluster import KMeans
+        # Usar los centroides de los clusters encontrados
+        centroids = []
+        for cluster_id in range(n_clusters):
+            cluster_mask = labels_sample == cluster_id
+            if cluster_mask.sum() > 0:
+                centroid = X_sample[cluster_mask].mean(axis=0)
+                centroids.append(centroid)
+        
+        if len(centroids) == n_clusters:
+            # Asignar todas las muestras al cluster más cercano
+            kmeans_assigner = KMeans(
+                n_clusters=n_clusters,
+                init=np.array(centroids),
+                n_init=1,
+                max_iter=1,
+                random_state=params.get('random_state', 42)
+            )
+            labels = kmeans_assigner.fit_predict(X)
+        else:
+            # Fallback: usar K-Means normal
+            logger.warning("No se pudieron calcular todos los centroides. Usando K-Means como fallback.")
+            kmeans_assigner = KMeans(
+                n_clusters=n_clusters,
+                random_state=params.get('random_state', 42),
+                n_init=10
+            )
+            labels = kmeans_assigner.fit_predict(X)
+    else:
+        labels = labels_sample
     
     # Calcular métricas
     silhouette = silhouette_score(X, labels)
@@ -257,10 +315,14 @@ def apply_hierarchical(
         'linkage': linkage,
         'silhouette_score': float(silhouette),
         'davies_bouldin_score': float(davies_bouldin),
-        'calinski_harabasz_score': float(calinski_harabasz)
+        'calinski_harabasz_score': float(calinski_harabasz),
+        'used_sample': use_sample,
+        'sample_size': max_samples if use_sample else len(X)
     }
     
     logger.info(f"Hierarchical completado: {n_clusters} clusters, silhouette={silhouette:.4f}")
+    if use_sample:
+        logger.info(f"  (Usando submuestra de {max_samples} de {len(X)} muestras totales)")
     
     return results
 

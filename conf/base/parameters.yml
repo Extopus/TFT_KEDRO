@@ -170,6 +170,7 @@ unsupervised_config:
     # Hierarchical
     hierarchical_n_clusters: 3
     hierarchical_linkage: "ward"  # ward, complete, average
+    hierarchical_max_samples: 10000  # Para datasets grandes, usar submuestra (evita O(n²) memoria)
   
   # Configuración de Reducción Dimensional
   dimensionality_reduction:
@@ -179,7 +180,7 @@ unsupervised_config:
     # t-SNE
     tsne_n_components: 2
     tsne_perplexity: 30
-    tsne_n_iter: 1000
+    tsne_max_iter: 1000
     tsne_max_samples: 10000  # Para datasets grandes
     
     # UMAP (opcional)

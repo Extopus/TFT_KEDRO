@@ -82,6 +82,30 @@ dag = DAG(
     tags=['kedro', 'machine_learning', 'tft'],
 )
 
+# Tarea para ejecutar pipeline de data engineering (feature engineering)
+run_feature_engineering = PythonOperator(
+    task_id='run_feature_engineering',
+    python_callable=run_kedro_pipeline,
+    op_kwargs={'pipeline_name': 'feature_engineering'},
+    dag=dag,
+)
+
+# Tarea para ejecutar pipeline de clustering
+run_clustering = PythonOperator(
+    task_id='run_clustering',
+    python_callable=run_kedro_pipeline,
+    op_kwargs={'pipeline_name': 'clustering'},
+    dag=dag,
+)
+
+# Tarea para ejecutar pipeline de reducción dimensional
+run_dimensionality_reduction = PythonOperator(
+    task_id='run_dimensionality_reduction',
+    python_callable=run_kedro_pipeline,
+    op_kwargs={'pipeline_name': 'dimensionality_reduction'},
+    dag=dag,
+)
+
 # Tarea para ejecutar pipeline de clasificación
 run_classification = PythonOperator(
     task_id='run_classification_pipeline',
@@ -98,5 +122,13 @@ run_regression = PythonOperator(
     dag=dag,
 )
 
-# Definir el orden de ejecución
-run_classification >> run_regression  # Ejecutar clasificación antes que regresión
+# Tarea para ejecutar pipeline de integración (unsupervised + supervised)
+run_ml_integration = PythonOperator(
+    task_id='run_ml_integration',
+    python_callable=run_kedro_pipeline,
+    op_kwargs={'pipeline_name': 'ml_integration'},
+    dag=dag,
+)
+
+# Definir el orden de ejecución: data_engineering → unsupervised → supervised → integration
+run_feature_engineering >> [run_clustering, run_dimensionality_reduction] >> run_classification >> run_regression >> run_ml_integration

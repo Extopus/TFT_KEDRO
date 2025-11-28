@@ -45,10 +45,14 @@ def register_pipelines() -> dict[str, Pipeline]:
     
     # Pipeline de aprendizaje no supervisado
     from tft_kedro.pipelines.unsupervised_learning import clustering, dimensionality_reduction
+    from tft_kedro.pipelines.data_science.pipeline import create_integrated_pipeline
     
     pipelines["unsupervised_learning"] = unsupervised_learning.create_pipeline()
     pipelines["clustering"] = clustering.pipeline.create_pipeline()
     pipelines["dimensionality_reduction"] = dimensionality_reduction.pipeline.create_pipeline()
+    
+    # Pipeline de integración (unsupervised + supervised)
+    pipelines["ml_integration"] = create_integrated_pipeline()
     
     pipelines["__default__"] = sum(pipelines.values())
     return pipelines
