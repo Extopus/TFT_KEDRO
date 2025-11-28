@@ -35,14 +35,19 @@ TFT_KEDRO/
 ├── docs/                          # Documentación del proyecto
 ├── notebooks/                     # Jupyter notebooks por fase CRISP-DM
 │   ├── 01_business_understanding.ipynb
-│   ├── 02_data_understanding.ipynb
-│   └── 03_data_preparation.ipynb
+│   ├── 02_data_cleaning.ipynb
+│   ├── 03_feature_engineering.ipynb
+│   ├── 04_machine_learning.ipynb
+│   └── 05_unsupervised_learning.ipynb
 ├── src/tft_kedro/                 # Código fuente del proyecto
 │   ├── pipelines/
 │   │   ├── business_understanding/
 │   │   ├── data_cleaning/
 │   │   ├── feature_engineering/
 │   │   ├── data_science/
+│   │   ├── unsupervised_learning/
+│   │   │   ├── clustering/
+│   │   │   └── dimensionality_reduction/
 │   │   └── reporting/
 │   └── pipeline_registry.py
 ├── README.md
@@ -149,6 +154,17 @@ ls data/01_raw/
 - **Data Integration**: Combinación de múltiples fuentes
 - **Pipeline**: `feature_engineering`
 
+### Fase 4: Modelado
+- **Machine Learning Supervisado**: Clasificación y regresión con múltiples algoritmos
+  - Clasificación: RandomForest, LogisticRegression, SVM, KNN, GradientBoosting, DecisionTree
+  - Regresión: RandomForest, GradientBoosting
+  - Pipeline: `data_science`
+- **Aprendizaje No Supervisado**: Clustering y reducción dimensional
+  - Clustering: K-Means, DBSCAN, Hierarchical Clustering
+  - Reducción Dimensional: PCA, t-SNE
+  - Integración: Clusters como features para modelos supervisados
+  - Pipeline: `unsupervised_learning`
+
 ## 📊 Datasets Incluidos
 
 El proyecto procesa **3 datasets diferentes** de TFT:
@@ -178,10 +194,13 @@ kedro run --pipeline data_cleaning
 # 3. Tercero: Ingeniería de features (incluye combinación de datos)
 kedro run --pipeline feature_engineering
 
-# 4. Cuarto: Data Science (requiere tft_combined_features.parquet)
+# 4. Cuarto: Data Science - Supervisado (requiere tft_combined_features.parquet)
 kedro run --pipeline data_science
 
-# 5. Quinto: Reporting (requiere modelos entrenados)
+# 5. Quinto: Aprendizaje No Supervisado (requiere tft_combined_features.parquet)
+kedro run --pipeline unsupervised_learning
+
+# 6. Sexto: Reporting (requiere modelos entrenados)
 kedro run --pipeline reporting
 ```
 
@@ -206,8 +225,11 @@ kedro run --pipeline data_cleaning
 # Ingeniería de features
 kedro run --pipeline feature_engineering
 
-# Data Science
+# Data Science - Supervisado
 kedro run --pipeline data_science
+
+# Aprendizaje No Supervisado
+kedro run --pipeline unsupervised_learning
 
 # Reporting
 kedro run --pipeline reporting
@@ -225,20 +247,37 @@ kedro viz
 | `business_understanding` | Fase 1 | Análisis de objetivos y métricas clave | ✅ |
 | `data_cleaning` | Fase 2 | EDA y limpieza de datos | ✅ |
 | `feature_engineering` | Fase 3 | Creación de features para ML | ✅ |
-| `data_science` | Fase 4 | Modelado y evaluación | ✅ |
+| `data_science` | Fase 4 | Modelado supervisado (clasificación y regresión) | ✅ |
+| `unsupervised_learning` | Fase 4 | Clustering y reducción dimensional | ✅ |
 | `reporting` | Fase 5 | Reportes y visualizaciones | ✅ |
 
 ## 🎯 Targets para Machine Learning
 
-### Clasificación
+### Machine Learning Supervisado
+
+#### Clasificación
 - **Target**: Rango del jugador (Challenger/Grandmaster/Platinum)
 - **Justificación**: Identificar patrones que diferencien niveles de juego
 - **Métricas**: Accuracy, Precision, Recall, F1-Score
+- **Algoritmos**: RandomForest, LogisticRegression, SVM, KNN, GradientBoosting, DecisionTree
 
-### Regresión
+#### Regresión
 - **Target**: Placement en partidas (1-8)
 - **Justificación**: Predecir rendimiento basado en composición del equipo
 - **Métricas**: MAE, MSE, R²
+- **Algoritmos**: RandomForest, GradientBoosting
+
+### Aprendizaje No Supervisado
+
+#### Clustering
+- **Técnicas**: K-Means, DBSCAN, Hierarchical Clustering
+- **Métricas**: Silhouette Score, Davies-Bouldin Index, Calinski-Harabasz Index
+- **Objetivo**: Identificar grupos naturales de jugadores
+
+#### Reducción Dimensional
+- **Técnicas**: PCA (Principal Component Analysis), t-SNE
+- **Objetivo**: Visualizar estructura de datos y reducir complejidad
+- **Aplicación**: Integración de clusters como features para modelos supervisados
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -250,7 +289,9 @@ kedro viz
 ### Librerías de Análisis
 - **pandas**: Manipulación de datos
 - **numpy**: Computación numérica
-- **scikit-learn**: Machine Learning
+- **scikit-learn**: Machine Learning (supervisado y no supervisado)
+- **umap-learn**: Reducción dimensional alternativa
+- **hdbscan**: Clustering jerárquico basado en densidad
 
 ### Visualización
 - **matplotlib**: Gráficos básicos
@@ -448,9 +489,10 @@ Este proyecto es parte de la evaluación parcial de Machine Learning - Universid
 - ✅ `business_understanding` - **FUNCIONA PERFECTAMENTE**
 - ✅ `data_cleaning` - **FUNCIONA PERFECTAMENTE**
 - ✅ `feature_engineering` - **FUNCIONA PERFECTAMENTE**
+- ✅ `data_science` - **FUNCIONA PERFECTAMENTE** (ML Supervisado)
+- ✅ `unsupervised_learning` - **FUNCIONA PERFECTAMENTE** (Clustering y Reducción Dimensional)
 
 ### Pipelines Implementados (Requieren datos previos)
-- ⚠️ `data_science` - Implementado pero requiere archivo `tft_combined_features.parquet`
 - ⚠️ `reporting` - Implementado pero requiere modelos entrenados
 
 ### Datos Disponibles
@@ -474,9 +516,13 @@ Este proyecto TFT Kedro está **100% listo para entrega** y cumple con todos los
 
 ### ✅ **Funcionalidad Verificada**
 - **3 datasets TFT** procesados correctamente (Challenger, Grandmaster, Platinum)
-- **5 pipelines Kedro** implementados y funcionando
+- **6 pipelines Kedro** implementados y funcionando
 - **EDA completo** en notebooks Jupyter
 - **Feature engineering** aplicado exitosamente
+- **Machine Learning Supervisado**: 6 modelos de clasificación + 2 de regresión
+- **Aprendizaje No Supervisado**: 3 técnicas de clustering + 2 de reducción dimensional
+- **Integración completa**: Clusters como features para modelos supervisados
+- **Optimizaciones**: Submuestras y parámetros ajustados para datasets grandes
 - **Documentación completa** y reproducible
 
 ### 🚀 **Instalación en 5 Comandos**
@@ -502,10 +548,16 @@ kedro run --pipeline business_understanding
 - **240,000+ registros** procesados de partidas TFT
 - **Estadísticas descriptivas** generadas por rango
 - **Features derivadas** para modelado ML
+- **Modelos supervisados** entrenados y evaluados
+- **Clusters identificados** para segmentación de jugadores
+- **Reducción dimensional** aplicada (PCA y t-SNE)
 - **Pipeline modular** y reutilizable
 
-
-- **Features derivadas** para modelado ML
-- **Pipeline modular** y reutilizable
+### 🚀 **Optimizaciones Implementadas**
+- **Submuestras inteligentes**: Para cálculos costosos (Elbow, t-SNE, Hierarchical)
+- **MiniBatchKMeans**: Para datasets grandes (>100k filas)
+- **Paralelización**: `n_jobs=-1` en algoritmos compatibles
+- **Early stopping**: En t-SNE para reducir tiempo de ejecución
+- **Asignación eficiente**: NearestNeighbors para asignar clusters a todas las muestras
 
 **Nota**: Este proyecto implementa las mejores prácticas de ingeniería de software para Machine Learning, incluyendo modularidad, reproducibilidad y documentación completa. Los pipelines básicos están 100% funcionales y listos para uso.

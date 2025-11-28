@@ -22,3 +22,4 @@ def create_pipeline(**kwargs) -> Pipeline:
     # Combinar pipelines
     return clustering_pipeline + dim_reduction_pipeline
 
+
